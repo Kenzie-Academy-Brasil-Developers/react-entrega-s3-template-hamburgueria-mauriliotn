@@ -1,10 +1,12 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { CartModal } from "../../components/CartModal";
 import { Header } from "../../components/Header";
 import { ProductList } from "../../components/ProductList";
 import { api } from "../../services/api";
 import { LoadingList } from "../../components/LoadingList";
 import { toast } from "react-toastify";
+import Modal from "react-responsive-modal";
+
 
 export const HomePage = () => {
   const localCardList = localStorage.getItem("@CARTLIST");
@@ -16,13 +18,29 @@ export const HomePage = () => {
   const [isVisibe, setVisible] = useState(false);
   const [search, setSearch] = useState("");
   const [filteredProducts, setFilteredProducts] = useState(productList);
+  const [open, setOpen] = useState(false);
 
-  const productsResult = productList.filter(
-    (product) =>
-      product.name.toLowerCase().includes(search.toLowerCase()) ||
-      product.category.toLowerCase().includes(search.toLowerCase())
-  );
-
+  
+  const productsResults = useCallback (() =>{
+    const productsResult = productList.filter(
+      (product) =>
+        product.name.toLowerCase().includes(search.toLowerCase()) ||
+        product.category.toLowerCase().includes(search.toLowerCase())
+    );
+    console.log(productsResult);
+    if (productsResult.length > 0) {
+      toast.success("encontrou")
+      setSearch("")
+    }
+    setFilteredProducts (productsResult.length > 0 ? productsResult : productList)
+  },[search])
+  
+  const onOpenModal = () => setOpen(true);
+  const onCloseModal = () =>{
+    setOpen(false);
+    setSearch("")
+  } 
+    
   useEffect(() => {
     const getProducts = async () => {
       try {
@@ -42,9 +60,15 @@ export const HomePage = () => {
     localStorage.setItem("@CARTLIST", JSON.stringify(cartList));
   }, [cartList]);
 
+  // useEffect(() => {
+  //   setFilteredProducts( productsResults());
+  // }, []);
+
   useEffect(() => {
-    setFilteredProducts(search ? productsResult : productList);
-  }, [search, productList]);
+    if (filteredProducts.length === 0 && search) {
+      onOpenModal();
+    }
+  }, [filteredProducts, search, open]);
   
 
   const addCart = (addCart) => {
@@ -81,6 +105,8 @@ export const HomePage = () => {
             filteredProducts={filteredProducts}
             setSearch={setSearch}
             setFilteredProducts={setFilteredProducts}
+            setOpen={setOpen}
+            open={open}
           />
         )}
 
@@ -92,6 +118,29 @@ export const HomePage = () => {
             setVisible={setVisible}
           />
         ) : null}
+         <div>
+          <Modal
+            open={open}
+            onClose={() => {
+              onCloseModal();
+              setFilteredProducts(productList);
+            }}
+            center
+          >
+            <p>
+              Nenhum Produto encontrado com "{search}", por favor tente
+              novamente
+            </p>
+            <button
+              onClick={() => {
+                onCloseModal();
+                setFilteredProducts(productList);
+              }}
+            >
+              Clique aqui para voltar a lista completa
+            </button>
+          </Modal>
+        </div>
       </main>
     </>
   );

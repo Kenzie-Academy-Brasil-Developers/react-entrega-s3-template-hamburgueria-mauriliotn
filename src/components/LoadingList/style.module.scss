@@ -1,0 +1,11 @@
+.loadingList{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    overflow-x: scroll;
+    & > div{
+        background: var(--color-grey100);
+        width: 18.75rem;
+        height: 9.375rem;
+    }
+}

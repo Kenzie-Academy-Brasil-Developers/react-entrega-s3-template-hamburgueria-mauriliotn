@@ -1,0 +1,22 @@
+*{
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+ul, ol{
+    list-style: none;
+}
+button, a{
+    cursor: pointer;
+    background: transparent;
+    border: none;
+}
+input, select, textarea{
+    background-color: transparent;
+    border: none;
+    outline: none;
+}
+img{
+    max-width: 100%;
+}

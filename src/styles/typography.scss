@@ -1,0 +1,42 @@
+.heading {
+  font-family: var(--font-primary);
+  font-weight: 700;
+  &.one {
+    font-size: 1.625rem;
+    line-height: 2.125rem;
+  }
+  &.two {
+    font-size: 1.375rem;
+    line-height: 1.5rem;
+  }
+  &.three {
+    font-size: 1.125rem;
+    line-height: 1.5rem;
+  }
+}
+
+.headline,
+.body,
+.caption {
+  font-weight: 400;
+}
+.headline,
+.body {
+  line-height: 1.5rem;
+}
+.headline {
+  font-family: var(--font-primary);
+  font-size: 1rem;
+}
+.body {
+  font-family: var(--font-primary);
+  font-size: 0.875rem;
+  &.bold {
+    font-weight: 600;
+  }
+}
+.caption {
+  font-family: var(--font-primary);
+  font-size: 0.75rem;
+  line-height: 1rem;
+}

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { CartModal } from "../../components/CartModal";
 import { Header } from "../../components/Header";
 import { ProductList } from "../../components/ProductList";
@@ -6,7 +6,6 @@ import { api } from "../../services/api";
 import { LoadingList } from "../../components/LoadingList";
 import { toast } from "react-toastify";
 import Modal from "react-responsive-modal";
-
 
 export const HomePage = () => {
   const localCardList = localStorage.getItem("@CARTLIST");
@@ -20,33 +19,25 @@ export const HomePage = () => {
   const [filteredProducts, setFilteredProducts] = useState(productList);
   const [open, setOpen] = useState(false);
 
-  
-  const productsResults = useCallback (() =>{
-    const productsResult = productList.filter(
-      (product) =>
-        product.name.toLowerCase().includes(search.toLowerCase()) ||
-        product.category.toLowerCase().includes(search.toLowerCase())
-    );
-    console.log(productsResult);
-    if (productsResult.length > 0) {
-      toast.success("encontrou")
-      setSearch("")
-    }
-    setFilteredProducts (productsResult.length > 0 ? productsResult : productList)
-  },[search])
-  
   const onOpenModal = () => setOpen(true);
-  const onCloseModal = () =>{
+  const onCloseModal = () => {
     setOpen(false);
-    setSearch("")
-  } 
-    
+    setSearch("");
+  };
+
+  const productsResult = productList.filter(
+    (product) =>
+      product.name.toLowerCase().includes(search.toLowerCase()) ||
+      product.category.toLowerCase().includes(search.toLowerCase())
+  );
+
   useEffect(() => {
     const getProducts = async () => {
       try {
         setLoading(true);
         const { data } = await api.get("/products");
         setProductList(data);
+        setFilteredProducts(data);
       } catch (error) {
         console.log(error);
       } finally {
@@ -60,24 +51,65 @@ export const HomePage = () => {
     localStorage.setItem("@CARTLIST", JSON.stringify(cartList));
   }, [cartList]);
 
-  // useEffect(() => {
-  //   setFilteredProducts( productsResults());
-  // }, []);
+  useEffect(() => {
+    if (search !== "") {
+      const productsResults = () => {
+        if (productsResult.length > 0) {
+          toast.success(
+            <p>
+              Você encontrou <strong>x{productsResult.length}</strong> na busca
+              por <strong>"{search}"</strong>🔍
+            </p>
+          );
+          setSearch("");
+        }
+
+        return productsResult.length > 0 ? productsResult : productList;
+      };
+      setFilteredProducts(productsResults());
+    }
+  }, [search]);
 
   useEffect(() => {
-    if (filteredProducts.length === 0 && search) {
+    if (productsResult.length === 0 && search) {
       onOpenModal();
     }
   }, [filteredProducts, search, open]);
-  
 
-  const addCart = (addCart) => {
-    if (!cartList.some((cart) => cart.id === addCart.id)) {
-      setCartList([...cartList, addCart]);
-      toast.success("Produto ao Carrinho 🛒");
+  const addCart = (product) => {
+    const item = cartList.some((cart) => cart.id === product.id);
+
+    if (!item) {
+      setCartList([...cartList, { ...product, count: 1 }]);
+      toast.success("Produto ao adicionado Carrinho 🛒");
     } else {
-      toast.error("produto ja adicionado ");
+      const newCartList = cartList.map((cartProduct) => {
+        if (product.id === cartProduct.id) {
+          toast.success("Produto acrecentado ao Carrinho 🛒");
+          return {
+            ...cartProduct,
+            count: cartProduct.count + 1,
+          };
+        } else {
+          return cartProduct;
+        }
+      });
+      setCartList(newCartList);
     }
+  };
+  const subCard = (product) => {
+    const newCartList = cartList.map((cartProduct) => {
+      if (product.id === cartProduct.id && product.count > 1) {
+        toast.success("Produto diminuido do Carrinho 🛒");
+        return {
+          ...cartProduct,
+          count: cartProduct.count - 1,
+        };
+      } else {
+        return cartProduct;
+      }
+    });
+    setCartList(newCartList);
   };
 
   const removeCart = (cartId) => {
@@ -98,16 +130,7 @@ export const HomePage = () => {
         {loading ? (
           <LoadingList />
         ) : (
-          <ProductList
-            search={search}
-            addCart={addCart}
-            productList={productList}
-            filteredProducts={filteredProducts}
-            setSearch={setSearch}
-            setFilteredProducts={setFilteredProducts}
-            setOpen={setOpen}
-            open={open}
-          />
+          <ProductList addCart={addCart} filteredProducts={filteredProducts} />
         )}
 
         {isVisibe ? (
@@ -116,9 +139,11 @@ export const HomePage = () => {
             removeCart={removeCart}
             setCartList={setCartList}
             setVisible={setVisible}
+            addCart={addCart}
+            subCard={subCard}
           />
         ) : null}
-         <div>
+        <div>
           <Modal
             open={open}
             onClose={() => {
@@ -126,19 +151,34 @@ export const HomePage = () => {
               setFilteredProducts(productList);
             }}
             center
+            classNames={{
+              modalAnimationIn: "customEnterModalAnimation",
+              modalAnimationOut: "customLeaveModalAnimation",
+              modal: "customModal",
+            }}
+            animationDuration={800}
           >
-            <p>
-              Nenhum Produto encontrado com "{search}", por favor tente
-              novamente
-            </p>
-            <button
-              onClick={() => {
-                onCloseModal();
-                setFilteredProducts(productList);
-              }}
-            >
-              Clique aqui para voltar a lista completa
-            </button>
+            <>
+              <div className="modalHeader">
+                <h2 className="heading two">Nenhum produto encontrado</h2>
+              </div>
+              <div className="modalContent">
+                <p className="headline">
+                  Não foi possível identificar nenhum produto com <br />
+                  <strong>"{search}"</strong>
+                  <br /> por favor tente novamente
+                </p>
+                <button
+                  className="btn medium headline"
+                  onClick={() => {
+                    onCloseModal();
+                    setFilteredProducts(productList);
+                  }}
+                >
+                  Clique aqui para voltar a lista completa
+                </button>
+              </div>
+            </>
           </Modal>
         </div>
       </main>

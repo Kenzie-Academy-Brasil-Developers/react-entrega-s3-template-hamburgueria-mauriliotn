@@ -1,0 +1,74 @@
+.header {
+  width: 100%;
+  background: var(--color-grey0);
+  img {
+    position: absolute;
+    top: 28px;
+    left: 26px;
+    @media (min-width: 796px){
+      top: 44px;
+    }
+  }
+  
+}
+.iconCart {
+  color: var(--color-grey400);
+}
+.inp {
+  width: 100%;
+  outline: none;
+  border: none;
+  &::placeholder {
+    color: var(--color-grey100);
+  }
+}
+button.btn {
+  background: var(--color-primary);
+  border: none;
+}
+.inpBox {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 14px;
+
+  & > button {
+    position: relative;
+    & > div {
+      position: absolute;
+      top: -10px;
+      right: 0px;
+      width: 1.25rem;
+      height: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      border-radius: 7px;
+      background: var(--color-primary);
+      & > span {
+        font-family: var(--font-primary);
+        font-size: 0.875rem;
+        font-family: 900;
+        color: var(--color-grey0);
+        border-radius: 7px;
+      }
+    }
+  }
+
+  .form {
+    width: 100%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  @media (min-width: 796px) {
+    flex-direction: row;
+    justify-content: flex-end;
+    .form {
+      width: 365px;
+    }
+  }
+}

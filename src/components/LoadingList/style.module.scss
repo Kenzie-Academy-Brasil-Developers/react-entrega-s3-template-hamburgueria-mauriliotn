@@ -1,11 +1,52 @@
-.loadingList{
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    overflow-x: scroll;
-    & > div{
-        background: var(--color-grey100);
-        width: 18.75rem;
-        height: 9.375rem;
+.loadingList {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  overflow-x: scroll;
+  margin-right: -1rem;
+  padding-right: 1rem;
+  padding-bottom: 1rem;
+  gap: 20px;
+  @media (min-width: 1390px) {
+    display: grid;
+    align-items: center;
+    justify-content: center;
+    grid-template-columns: repeat(4, 1fr);
+    justify-items: center;
+    overflow-x: hidden;
+  }
+  @media (min-width: 796px) and (max-width: 1389px) {
+    display: grid;
+    align-items: center;
+    justify-content: center;
+    ustify-items: center;
+    grid-template-columns: repeat(3, 1fr);
+    overflow-x: hidden;
+  }
+  @media (min-width: 796px) and (max-width: 1030px) {
+    display: grid;
+    align-items: center;
+    justify-content: center;
+    justify-items: center;
+    grid-template-columns: repeat(2, 1fr);
+    overflow-x: hidden;
+  }
+
+  & > div {
+    animation: pulse .4s infinite;
+    background: var(--color-grey100);
+    min-width: 18.75rem;
+    max-width: 18.75rem;
+    height: 24.125rem;
+  }
+}
+@keyframes pulse{
+    0%{
+        opacity: .5;
+    } 50% {
+        opacity: 1;
+    } 100% {
+        opacity: .5;
     }
 }

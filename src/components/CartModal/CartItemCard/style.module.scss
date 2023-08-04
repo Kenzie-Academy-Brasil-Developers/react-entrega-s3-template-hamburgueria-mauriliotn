@@ -1,0 +1,32 @@
+.cardList {
+  display: flex;
+  justify-content: space-between;
+  div:first-child {
+    display: flex;
+    align-items: start;
+    gap: 10px;
+    & > img {
+      height: 80px;
+      border-radius: 5px;
+      background: var(--color-grey100);
+    }
+  }
+  div:last-child {
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: flex-end;
+    justify-content: space-between;
+    & > button {
+      color: var(--color-grey400);
+    }
+    & > div {
+      color: var(--color-grey300);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      & > button {
+        color: var(--color-grey300);
+      }
+    }
+  }
+}

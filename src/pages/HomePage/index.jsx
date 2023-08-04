@@ -85,7 +85,7 @@ export const HomePage = () => {
     } else {
       const newCartList = cartList.map((cartProduct) => {
         if (product.id === cartProduct.id) {
-          toast.success("Produto acrecentado ao Carrinho 🛒");
+          toast.success("Produto acrescentado ao Carrinho 🛒");
           return {
             ...cartProduct,
             count: cartProduct.count + 1,
@@ -115,7 +115,7 @@ export const HomePage = () => {
   const removeCart = (cartId) => {
     const newCartList = cartList.filter((cart) => cart.id !== cartId);
     setCartList(newCartList);
-    toast.success("item removido com sucesso");
+    toast.success("Produto removido com sucesso");
   };
 
   return (
